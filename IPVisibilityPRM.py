@@ -12,18 +12,18 @@ from scipy.spatial import cKDTree
 from IPPerfMonitor import IPPerfMonitor
 
 class VisibilityStatsHandler():
-    
+
     def __init__(self):
         self.graph = nx.Graph()
-        
+
     def addNodeAtPos(self,nodeNumber,pos):
         self.graph.add_node(nodeNumber, pos=pos, color='yellow')
         return
-    
+
     def addVisTest(self,fr,to):
         self.graph.add_edge(fr, to)
         return
-        
+
 class VisPRM(PRMBase):
     """Class implements an simplified version of a visibility PRM"""
 
@@ -31,7 +31,7 @@ class VisPRM(PRMBase):
         super(VisPRM, self).__init__(_collChecker)
         self.graph = nx.Graph()
         self.statsHandler = VisibilityStatsHandler() # not yet fully customizable (s. parameters of constructors)
-                
+
     def _isVisible(self, pos, guardPos):
         return not self._collisionChecker.lineInCollision(pos, guardPos)
 
@@ -46,9 +46,9 @@ class VisPRM(PRMBase):
             q_pos = self._getRandomFreePosition()
             if self.statsHandler:
                 self.statsHandler.addNodeAtPos(nodeNumber, q_pos)
-           
+
             g_vis = None
-        
+
             # every connected component represents one guard
             merged = False
             for comp in nx.connected_components(self.graph): # Impliciteley represents G_vis
@@ -69,10 +69,10 @@ class VisPRM(PRMBase):
                                 merged = True
                         # break, if node was visible,because visibility from one node of the guard is sufficient...
                         if found == True: break;
-                # break, if connection was found. Reason: computed connected components (comp) are not correct any more, 
-                # they've changed because of merging
+                # break, if connection was found. Reason: computed connected components (comp) are not correct any more,
+                # they've changezd because of merging
                 if merged == True: # how  does it change the behaviour? What has to be done to keep the original behaviour?
-                    break;                    
+                    break;
 
             if (merged==False) and (g_vis == None):
                 self.graph.add_node(nodeNumber, pos = q_pos, color='red', nodeType = 'Guard')
@@ -86,23 +86,23 @@ class VisPRM(PRMBase):
     @IPPerfMonitor
     def planPath(self, startList, goalList, config):
         """
-        
+
         Args:
             start (array): start position in planning space
             goal (array) : goal position in planning space
             config (dict): dictionary with the needed information about the configuration options
-            
+
         Example:
-        
-            config["ntry"] = 40 
-        
+
+            config["ntry"] = 40
+
         """
         # 0. reset
         self.graph.clear()
-        
+
         # 1. check start and goal whether collision free (s. BaseClass)
         checkedStartList, checkedGoalList = self._checkStartGoal(startList,goalList)
-        
+
         # 2. learn Roadmap
         self._learnRoadmap(config["ntry"])
 
@@ -110,7 +110,7 @@ class VisPRM(PRMBase):
         # find nearest, collision-free connection between node on graph and start
         posList = nx.get_node_attributes(self.graph,'pos')
         kdTree = cKDTree(list(posList.values()))
-        
+
         result = kdTree.query(checkedStartList[0],k=5)
         for node in result[1]:
             if not self._collisionChecker.lineInCollision(checkedStartList[0],self.graph.nodes()[list(posList.keys())[node]]['pos']):
@@ -130,4 +130,4 @@ class VisPRM(PRMBase):
         except:
             return []
         return path
-        
+

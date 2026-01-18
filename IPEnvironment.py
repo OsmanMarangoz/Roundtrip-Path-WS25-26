@@ -66,5 +66,5 @@ class CollisionChecker(object):
 
     def drawObstacles(self, ax):
         for key, value in self.scene.items():
-            plotting.plot_polygon(value, add_points=False, color='red')
+            plotting.plot_polygon(value, ax=ax, add_points=False, color='red')
 

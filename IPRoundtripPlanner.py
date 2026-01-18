@@ -107,25 +107,46 @@ class RoundtripPlanner(PlanerBase):
         all_points = [checkedStartList[0]] + optimized_goals
         full_path = []
 
+        # Config auslesen
+        max_retries = config.get("maxRetries", 3)
+        retry_until_found = config.get("retry_until_found", False)
+
         for i in range(len(all_points)):
             # Verbinde aktuellen Punkt mit nächstem (letzter → zurück zu Start)
             current_point = all_points[i]
-            next_point = all_points[(i + 1) % len(all_points)] # modulo für Rückkehr zum Start weil 4%4=0 <-- index 0
+            next_point = all_points[(i + 1) % len(all_points)] # modulo für Rückkehr zum Start
 
             print(f"\n→ Plane Segment {i+1}/{len(all_points)}: {current_point} → {next_point}")
 
-            # Nutze den Basis-Planer für diese Verbindung
-            segment_path = self._pairwise_planner.planPath(
-                [current_point],
-                [next_point],
-                config
-            )
+            attempts = 0
+            segment_path = []
 
-            if not segment_path:
-                print(f"FEHLER: Kein Pfad gefunden!")
-                return []
+            while True:
+                segment_path = self._pairwise_planner.planPath(
+                    [current_point],
+                    [next_point],
+                    config
+                )
 
-            print(f"Pfad gefunden: {len(segment_path)} Punkte")
+                if segment_path:
+                    # Erfolg -> Raus aus der while-Schleife
+                    break
+
+                attempts += 1
+
+                # Prüfen ob wir abbrechen müssen
+                if (not retry_until_found) and attempts > max_retries:
+                    print(f"FEHLER: Kein Pfad gefunden nach {attempts} Versuchen.")
+                    return []
+
+                print(f"  [Retry {attempts}] Kein Pfad gefunden. Starte Planer neu (gleiche Config) und versuche erneut...")
+
+                try:
+                    self._pairwise_planner = self._pairwise_planner.__class__(self._collisionChecker)
+                except Exception as e:
+                    print(f"  Warnung: Konnte Planer nicht resetten ({e}), nutze alte Instanz.")
+
+            print(f"Pfad gefunden: {len(segment_path)} Punkte (im Versuch {attempts + 1})")
 
             # WICHTIG: Konvertiere SOFORT zu Koordinaten, bevor der Graph gelöscht wird!
             segment_coords = self._convertToCoordinates(segment_path)
