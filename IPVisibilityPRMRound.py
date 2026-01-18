@@ -153,4 +153,8 @@ class VisPRMRound(VisPRM):
             except nx.NetworkXNoPath:
                 pass 
 
+        try:
+            full_path = nx.shortest_path(self.graph,"start","goal")
+        except:
+            return []
         return full_path
