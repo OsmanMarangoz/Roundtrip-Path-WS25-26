@@ -62,7 +62,7 @@ class RoundtripPlanner(PlanerBase):
 
         # Christofides TSP
         tsp_tour = nx.approximation.christofides(G, weight='weight')
-
+        # algo gibt manchmal reihenfolge verdreht, wir wollen aber das Index 0 immer start ist
         # Tour so rotieren, dass Start (Index 0) am Anfang steht
         start_idx = tsp_tour.index(0)
         rotated_tour = tsp_tour[start_idx:] + tsp_tour[1:start_idx + 1]
