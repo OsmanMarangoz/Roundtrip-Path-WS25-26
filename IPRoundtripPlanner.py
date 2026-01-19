@@ -20,7 +20,6 @@ class RoundtripPlanner(PlanerBase):
     Features:
     - Akzeptiert 1 Startposition + mehrere Endpositionen
     - Nutzt beliebigen Planer für kollisionsfreie Punkt-zu-Punkt Pfade
-    - Interface kompatibel mit anderen Planern (PlanerBase)
     - Gibt zurück: Vollständiger Roundtrip-Pfad als Liste von Positionen
     """
 
