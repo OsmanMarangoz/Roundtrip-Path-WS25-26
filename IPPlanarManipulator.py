@@ -12,7 +12,7 @@ import numpy as np
 
 
 class PlanarJoint:
-    def __init__(self, a=1.5, init_theta=0, id=0):
+    def __init__(self, a=1, init_theta=0, id=0):
         self.a = a
         self.theta = init_theta
         self.sym_a, self.sym_theta = sp.symbols(f'a_{id} theta_{id}')
@@ -33,8 +33,10 @@ class PlanarJoint:
 
 
 class PlanarRobot:
-    def __init__(self, n_joints=2):
+    def __init__(self, n_joints=2, base_x=10, base_y=10):
         self.dim = n_joints
+        self.base_x = base_x
+        self.base_y = base_y
         self.joints = [PlanarJoint(id=i) for i in range(self.dim)]
         self.Ms = [sp.eye(3)]
         for joint in self.joints:
@@ -46,23 +48,20 @@ class PlanarRobot:
         for joint in self.joints:
             sub = {**sub, **joint.get_subs()}
         for M in self.Ms:
-            ts.append(np.squeeze(np.array(M.subs(sub) * sp.Matrix([0, 0, 1]))).astype(np.float32)[:2])
+            pos = np.squeeze(np.array(M.subs(sub) * sp.Matrix([0, 0, 1]))).astype(np.float32)[:2]
+            # Apply base offset
+            ts.append((pos[0] + self.base_x, pos[1] + self.base_y))
         return ts
+
+    def set_base_position(self, x, y):
+        """Move the entire robot to a new base position"""
+        self.base_x = x
+        self.base_y = y
 
     def move(self, new_thetas):
         assert len(new_thetas) == len(self.joints)
         for i in range(len(self.joints)):
             self.joints[i].move(new_thetas[i])
-
-class PointRobot:
-    def __init__(self):
-        self.position = np.array([0.0, 0.0], dtype=np.float32)
-
-    def get_transform(self):
-        return self.position
-
-    def move(self, new_position):
-        self.position = np.array(new_position, dtype=np.float32)
 
 
 if __name__ == '__main__':

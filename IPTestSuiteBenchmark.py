@@ -9,11 +9,14 @@ Basiert auf der Struktur von IPTestSuite.py
 """
 
 import sys
+
+from IPPlanarManipulator import PlanarRobot
 sys.path.append("./collisionChecker")
 
 from IPBenchmark import Benchmark
 from IPEnvironment import CollisionChecker
 from CollisionChecker3D import CollisionChecker3D
+from collisionChecker.KinChainCollisionChecker import KinChainCollisionChecker
 
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import unary_union
@@ -124,11 +127,6 @@ benchList.append(Benchmark(
     description_grid,
     3
 ))
-
-# ============================================================================
-# 3-DoF PLANAR-ROBOTER BENCHMARKS (2 Stück)
-# ============================================================================
-
 
 # ============================================================================
 # HILFSFUNKTIONEN

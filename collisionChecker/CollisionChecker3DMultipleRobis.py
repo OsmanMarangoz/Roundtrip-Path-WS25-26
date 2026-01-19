@@ -20,6 +20,7 @@ class CollisionCheckerMultipleRobots:
         self.scene = scene
         self.robot_shapes = []
         self.num_robots = len(robot_shapes)
+        self.collision_calls = 0
 
         # standardlimits
         if limits is None:
@@ -41,8 +42,9 @@ class CollisionCheckerMultipleRobots:
 
     @IPPerfMonitor
     def pointInCollision(self, pos):
+        self.collision_calls += 1
         """
-        pos: [x1,y1,a1, x2,y2,a2, ...] 
+        pos: [x1,y1,a1, x2,y2,a2, ...]
         Prüft Kollision mit Hindernissen und gegenseitige Roboterkollision.
         """
         assert len(pos) == self.getDim()
@@ -72,6 +74,7 @@ class CollisionCheckerMultipleRobots:
 
     @IPPerfMonitor
     def lineInCollision(self, startPos, endPos, steps=40):
+        self.collision_calls += 1
         """ Prüft Kollision auf einem geraden Segment """
         startPos = np.array(startPos)
         endPos = np.array(endPos)

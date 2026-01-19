@@ -15,6 +15,7 @@ class CollisionChecker3D(object):
     def __init__(self, scene, robot_shape: Polygon, limits=[[0.0, 22.1], [0.0, 22.1], [0.0, 360.0]], statistic=None):
         self.scene = scene
         self.limits = limits
+        self.collision_calls = 0
 
         self.robot_shape = robot_shape
         center = robot_shape.centroid
@@ -33,10 +34,10 @@ class CollisionChecker3D(object):
         """ Return whether a configuration is
         inCollision -> True
         Free -> False """
-
+        self.collision_calls += 1
         assert (len(pos) == self.getDim())
-        
-        rotated_shape = rotate(self.robot_shape, pos[2]) 
+
+        rotated_shape = rotate(self.robot_shape, pos[2])
         transformed_shape = translate(rotated_shape, pos[0], pos[1])
 
         for key, value in self.scene.items():
@@ -46,22 +47,23 @@ class CollisionChecker3D(object):
 
     @IPPerfMonitor
     def lineInCollision(self, startPos, endPos):
+        self.collision_calls += 1
         """ Check whether a line from startPos to endPos is colliding"""
         assert (len(startPos) == self.getDim())
         assert (len(endPos) == self.getDim())
-        
+
         p1 = np.array(startPos)
         p2 = np.array(endPos)
         p12 = p2-p1
         k = 40
-        
+
         for i in range(k):
             testPos = p1 + (i+1)/k*p12
             if self.pointInCollision(testPos)==True:
                 return True
-        
+
         return False
-                
+
 
     def drawObstacles(self, ax, color='r'):
         for key, value in self.scene.items():

@@ -20,6 +20,7 @@ class CollisionChecker(object):
     def __init__(self, scene, limits=[[0.0, 22.0], [0.0, 22.0]], statistic=None):
         self.scene = scene
         self.limits = limits
+        self.collision_calls = 0
 
     def getDim(self):
         """ Return dimension of Environment (Shapely should currently always be 2)"""
@@ -34,6 +35,7 @@ class CollisionChecker(object):
         """ Return whether a configuration is
         inCollision -> True
         Free -> False """
+        self.collision_calls += 1
         assert (len(pos) == self.getDim())
         for key, value in self.scene.items():
             if value.intersects(Point(pos[0], pos[1])):
@@ -42,6 +44,7 @@ class CollisionChecker(object):
 
     @IPPerfMonitor
     def lineInCollision(self, startPos, endPos):
+        self.collision_calls += 1
         """ Check whether a line from startPos to endPos is colliding"""
         assert (len(startPos) == self.getDim())
         assert (len(endPos) == self.getDim())
