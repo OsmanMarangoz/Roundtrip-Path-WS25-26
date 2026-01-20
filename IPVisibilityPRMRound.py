@@ -143,7 +143,7 @@ class VisPRMRound(VisPRM):
         else:
             return []
 
-        # 7. Pfad rekonstruieren (als Koordinaten-Liste zurückgeben!)
+        # 7. Pfad rekonstruieren
         full_path_nodes = []
         for i in range(len(best_order) - 1):
             try:

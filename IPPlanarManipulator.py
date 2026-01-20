@@ -12,7 +12,7 @@ import numpy as np
 
 
 class PlanarJoint:
-    def __init__(self, a=1, init_theta=0, id=0):
+    def __init__(self, a=5, init_theta=0, id=0):
         self.a = a
         self.theta = init_theta
         self.sym_a, self.sym_theta = sp.symbols(f'a_{id} theta_{id}')

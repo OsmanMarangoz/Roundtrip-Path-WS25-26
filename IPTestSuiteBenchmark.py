@@ -86,7 +86,7 @@ benchList.append(Benchmark(
 # 3-DoF SHAPE-ROBOTER BENCHMARKS (2 Stück)
 # ============================================================================
 
-# --- Benchmark 3: Spinner with Core (3-DoF Shape) - MITTEL ---
+# --- Benchmark 3: Spinner (3-DoF Shape) - MITTEL ---
 Spinner_with_Core3DoF = dict()
 Spinner_with_Core3DoF["obs1"] = (
     Point(15, 15).buffer(10)
@@ -94,7 +94,7 @@ Spinner_with_Core3DoF["obs1"] = (
     .difference(box(11, 2, 19, 28))  # Breiterer vertikaler Ausschnitt (von 13-17 auf 11-19)
     .difference(box(2, 11, 28, 19))  # Breiterer horizontaler Ausschnitt (von 13-17 auf 11-19)
 )
-Spinner_with_Core3DoF["obs2"] = Point(15, 15).buffer(3)
+# Spinner_with_Core3DoF["obs2"] = Point(15, 15).buffer(3)
 description_spinner = "Ring-Struktur mit weiten Öffnungen - Rotation erforderlich"
 robot_shape_spinner = (
     Point(1.5, 1.5).buffer(1.8)
