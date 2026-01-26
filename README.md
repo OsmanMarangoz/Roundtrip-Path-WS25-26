@@ -2,6 +2,8 @@
 
 Roundtrip-Planer mit TSP-Optimierung für kollisionsfreie Pfade.
 
-**Nutzung**: Siehe [KlausurProjekt.ipynb](KlausurProjekt.ipynb)
-
-**Kernfeature**: Verbindet Startpunkt mit mehreren Zielpunkte mit Christofides-TSP, nutzt beliebige Planer (LazyPRM, RRT, A*, etc.)
+**Nutzung**: 
+Siehe [Aufgabenteil_1a.ipynb](Aufgabenteil_1a.ipynb)
+Siehe [Aufgabenteil_1b_1.ipynb](Aufgabenteil_1b_1.ipynb)
+Siehe [Aufgabenteil_1b_2.ipynb](Aufgabenteil_1b_2.ipynb)
+Siehe [Aufgabenteil_1c.ipynb](Aufgabenteil_1c.ipynb)
