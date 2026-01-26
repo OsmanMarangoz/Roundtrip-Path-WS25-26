@@ -34,7 +34,7 @@ benchList.append(Benchmark(
     [
         [0, math.pi/4],
         [math.pi, -math.pi/4],      # weiteres Ziel
-        [math.pi*6/4, 0]
+        [-math.pi/2, 0]
     ],   # weiteres Ziel], # Ziel-Winkel (nicht x/y Koordinaten!)
     "2-Gelenk Arm in Hindernisumgebung",
     3
@@ -42,16 +42,16 @@ benchList.append(Benchmark(
 
 
 
-robot_arm_3 = PlanarRobot(n_joints=3, base_x=15, base_y=12.5)
+robot_arm_3 = PlanarRobot(n_joints=3, base_x=15, base_y=15)
 limits_3dof = [[-3.14, 3.14], [-3.14, 3.14], [-3.14, 3.14]]
 
 benchList.append(Benchmark(
     "PlanarArm_3DoF",
     KinChainCollisionChecker(robot_arm_3, Spinner_with_Core3DoF, limits=limits_3dof),
     [[0.0, 0.0, 0.0]],  # Start
-    [[0, math.pi/4,0],
-      [math.pi, -math.pi/4,0],
-      [math.pi*3/2, 0,0]], # Ziele (3 Winkel pro Ziel)
+    [[0,0,math.pi/4],
+      [math.pi, 0, -math.pi/4],
+      [-math.pi/2, 0,0]], # Ziele (3 Winkel pro Ziel)
     "3-Gelenk Arm (Schlangenroboter)",
     4
 ))

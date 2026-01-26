@@ -24,12 +24,14 @@ class KinChainCollisionChecker(CollisionChecker):
         self.kin_chain = kin_chain
         self.fk_resolution = fk_resolution
         self.dim = self.kin_chain.dim
+        self.collision_calls = 0
 
     def getDim(self):
         return self.dim
 
 
     def pointInCollision(self, pos):
+        self.collision_calls += 1
         self.kin_chain.move(pos)
         joint_positions = self.kin_chain.get_transforms()
         self.dim = 2
@@ -41,6 +43,7 @@ class KinChainCollisionChecker(CollisionChecker):
         return False
 
     def lineInCollision(self, startPos, endPos):
+        self.collision_calls += 1
         assert (len(startPos) == self.getDim())
         assert (len(endPos) == self.getDim())
         steps = interpolate_line(startPos, endPos, self.fk_resolution)
@@ -50,6 +53,7 @@ class KinChainCollisionChecker(CollisionChecker):
         return False
 
     def segmentInCollision(self, startPos, endPos):
+        self.collision_calls += 1
         assert (len(startPos) == self.getDim())
         assert (len(endPos) == self.getDim())
         for key, value in self.scene.items():
@@ -68,3 +72,8 @@ class KinChainCollisionChecker(CollisionChecker):
             xs = [joint_positions[i-1][0], joint_positions[i][0]]
             ys = [joint_positions[i-1][1], joint_positions[i][1]]
             ax.plot(xs, ys, color='g')
+
+    def drawObstacles_patched(self, ax, inWorkspace=False):
+        if inWorkspace:
+            for key, value in self.scene.items():
+                plotting.plot_polygon(value, add_points=False, color='red', ax=ax)

@@ -15,7 +15,7 @@ def visibilityPRMVisualizeRound(planner, solution, ax=None, nodeSize=300):
     """
     graph = planner.graph
     collChecker = planner._collisionChecker
-    
+
     # Prüfen ob 3D-Shape vorhanden ist
     is_3d = hasattr(collChecker, 'robot_shape')
     robot_shape = getattr(collChecker, 'robot_shape', None)
@@ -41,7 +41,7 @@ def visibilityPRMVisualizeRound(planner, solution, ax=None, nodeSize=300):
 
     guards = []
     connections = []
-    
+
     for n in graph.nodes():
         if str(n) == "start" or str(n).startswith("goal"): continue
         ntype = node_types.get(n, 'Unknown')
@@ -80,7 +80,7 @@ def visibilityPRMVisualizeRound(planner, solution, ax=None, nodeSize=300):
     ### 4. Roboter-Schemen (NUR 3D) ###
     if is_3d and solution and len(solution) > 1:
         steps_per_segment = 5
-        
+
         def draw_shape(x, y, theta, alpha):
             rotated = rotate(robot_shape, theta)
             transformed = translate(rotated, x, y)
@@ -128,7 +128,7 @@ def get_interpolated_trajectory(graph, solution, steps_per_segment=10):
             t = s / float(steps_per_segment)
             cur_x = (1-t)*p1[0] + t*p2[0]
             cur_y = (1-t)*p1[1] + t*p2[1]
-            
+
             if dim >= 3:
                 cur_th = (1-t)*p1[2] + t*p2[2]
                 traj.append([cur_x, cur_y, cur_th])
@@ -146,7 +146,7 @@ def animateRoundtrip(planner, solution, steps_per_segment=10, interval=50, save_
     """ Erstellt Animation (2D und 3D kompatibel). """
     graph = planner.graph
     collChecker = planner._collisionChecker
-    
+
     # Check 3D
     is_3d = hasattr(collChecker, 'robot_shape')
     robot_shape = getattr(collChecker, 'robot_shape', None)
@@ -159,7 +159,7 @@ def animateRoundtrip(planner, solution, steps_per_segment=10, interval=50, save_
     num_frames = len(trajectory)
     plt.close('all')
     fig, ax = plt.subplots(figsize=(8, 8))
-    
+
     limits = collChecker.getEnvironmentLimits()
     ax.set_xlim(limits[0][0], limits[0][1])
     ax.set_ylim(limits[1][0], limits[1][1])
@@ -167,7 +167,7 @@ def animateRoundtrip(planner, solution, steps_per_segment=10, interval=50, save_
     ax.grid(True)
 
     collChecker.drawObstacles(ax)
-    
+
     # Graph Hintergrund
     pos = nx.get_node_attributes(graph, 'pos')
     if pos:
@@ -190,7 +190,7 @@ def animateRoundtrip(planner, solution, steps_per_segment=10, interval=50, save_
 
     def update(frame):
         pose = trajectory[frame]
-        
+
         if is_3d:
             # 3D Update (Rotation + Translation)
             rot = affinity.rotate(robot_shape, pose[2], origin='centroid')
@@ -209,7 +209,7 @@ def animateRoundtrip(planner, solution, steps_per_segment=10, interval=50, save_
         try:
             if save_file.endswith('.mp4'): anim.save(save_file, writer='ffmpeg', fps=30)
             elif save_file.endswith('.gif'): anim.save(save_file, writer='pillow', fps=15)
-            elif save_file.endswith('.html'): 
+            elif save_file.endswith('.html'):
                 with open(save_file, 'w') as f: f.write(anim.to_jshtml())
             print(f"Gespeichert: {save_file}")
         except Exception as e: print(f"Fehler beim Speichern: {e}")

@@ -27,7 +27,7 @@ class VisPRMRound(VisPRM):
     @IPPerfMonitor
     def planPath(self, startList, goalsList, config):
         print("\n--- PLAN PATH ROUNDTRIP (VisPRM Optimized) ---")
-        
+
         # 0. Reset & Dimension prüfen
         self.graph.clear()
         dim = self._collisionChecker.getDim() #Unterscheidung 2D/3D
@@ -55,7 +55,7 @@ class VisPRMRound(VisPRM):
         roadmap_values = list(posList.values())
 
         SCALE_FACTOR_THETA = 0.05
-        
+
         # Skalieren wenn 3D (x,y,theta) (Winkel in Verhältnis setzen)
         if dim >= 3:
             roadmap_values_scaled = []
@@ -154,4 +154,11 @@ class VisPRMRound(VisPRM):
 
         # Umwandeln von Knoten-IDs in [x, y, (theta)] Koordinaten
         full_path_coords = [self.graph.nodes[n]['pos'] for n in full_path_nodes]
-        return full_path_coords
+
+        length = 0.0
+        for i in range(len(full_path_coords) - 1):
+            length += self._getDist(full_path_coords[i], full_path_coords[i+1])
+
+        print(f"Gesamtlänge des Roundtrips: {length:.2f}")
+
+        return full_path_coords, length

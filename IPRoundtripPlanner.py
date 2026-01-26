@@ -70,11 +70,6 @@ class RoundtripPlanner(PlanerBase):
         # Goals in TSP-Reihenfolge extrahieren (ohne Start-Index 0)
         optimized_goals = [goals[i - 1] for i in rotated_tour[1:-1]]
 
-        # Debug
-        total_dist = sum(self._euclidean_distance(all_points[rotated_tour[i]],
-                                                   all_points[rotated_tour[i+1]])
-                        for i in range(len(rotated_tour) - 1))
-        print(f"  TSP-Lösung (Christofides): Approximierte Distanz = {total_dist:.2f}")
         print(f"  Optimierte Reihenfolge: Start → {' → '.join(str(g) for g in optimized_goals)} → Start")
 
         return optimized_goals
@@ -91,6 +86,8 @@ class RoundtripPlanner(PlanerBase):
         print(f"Path Planing gestartet mit {type(self._pairwise_planner).__name__}")
         print(f"\n{'='*60}")
 
+        total_distance = 0.0
+
         # Schritt 1: Start und Goals prüfen (kollisionsfrei?) mit planerbase parent methode
         checkedStartList, checkedGoalList = self._checkStartGoal(startList, goalList)
 
@@ -101,7 +98,6 @@ class RoundtripPlanner(PlanerBase):
 
         # Schritt 2: TSP-Optimierung für beste Reihenfolge
         optimized_goals = self._find_optimal_order_tsp(checkedStartList[0], checkedGoalList)
-
         # Schritt 3: Alle Punkte in optimierter Reihenfolge sammeln
         all_points = [checkedStartList[0]] + optimized_goals
         full_path = []
@@ -151,6 +147,12 @@ class RoundtripPlanner(PlanerBase):
             segment_coords = self._convertToCoordinates(segment_path)
             print(f"Konvertiert zu Koordinaten: {len(segment_coords)} Punkte")
 
+            segment_real_dist = 0.0
+            for k in range(len(segment_coords) - 1):
+                segment_real_dist += self._euclidean_distance(segment_coords[k], segment_coords[k+1])
+
+            total_distance += segment_real_dist
+
             # Füge Segment zum Gesamtpfad hinzu (ohne Duplikate am Übergang)
             if i == 0:
                 full_path.extend(segment_coords)
@@ -163,9 +165,10 @@ class RoundtripPlanner(PlanerBase):
         print(f"  - Gesamtpunkte im Pfad: {len(full_path)}")
         print(f"  - Besuchte Ziele: {len(checkedGoalList)}")
         print(f"  - Start = Ende: {full_path[0] == full_path[-1]}")
+        print(f"  - Gesamtdistanz Roundtrip: {total_distance:.2f} meter")
         print(f"{'='*60}\n")
 
-        return full_path
+        return full_path, total_distance
 
     def _convertToCoordinates(self, path):
         """
