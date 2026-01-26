@@ -2,7 +2,7 @@
 
 Roundtrip-Planer mit TSP-Optimierung für kollisionsfreie Pfade.
 
-**Nutzung**: 
+**Nutzung**:
 
 Siehe [Aufgabenteil_1a.ipynb](Aufgabenteil_1a.ipynb)
 

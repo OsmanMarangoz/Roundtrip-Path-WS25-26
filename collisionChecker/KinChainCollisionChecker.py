@@ -1,5 +1,6 @@
 from IPEnvironment import CollisionChecker
 from shapely.geometry import LineString
+from shapely import plotting
 import numpy as np
 import copy
 
@@ -61,11 +62,6 @@ class KinChainCollisionChecker(CollisionChecker):
                 return True
         return False
 
-    def drawObstacles(self, ax, inWorkspace=False):
-        if inWorkspace:
-            for key, value in self.scene.items():
-                plotting.plot_polygon(value, add_points=False, color='red', ax=ax)
-
     def drawRobot(self, ax):
         joint_positions = self.kin_chain.get_transforms()
         for i in range(1, len(joint_positions)):
@@ -73,7 +69,7 @@ class KinChainCollisionChecker(CollisionChecker):
             ys = [joint_positions[i-1][1], joint_positions[i][1]]
             ax.plot(xs, ys, color='g')
 
-    def drawObstacles_patched(self, ax, inWorkspace=False):
+    def drawObstacles(self, ax, inWorkspace=False):
         if inWorkspace:
             for key, value in self.scene.items():
                 plotting.plot_polygon(value, add_points=False, color='red', ax=ax)
